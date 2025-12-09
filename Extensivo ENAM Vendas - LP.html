@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magistrar | Extensivo ENAM 2026</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        zinc: {
+                            850: '#1f1f22',
+                            950: '#0c0c0e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { -webkit-font-smoothing: antialiased; }
+        .glass-effect { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+        
+        /* Modal animations */
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        
+        /* Price reveal animation */
+        .price-hidden {
+            filter: blur(8px);
+            user-select: none;
+            pointer-events: none;
+        }
+        .price-revealed {
+            filter: blur(0);
+            transition: filter 0.5s ease;
+        }
+        
+        /* Loader */
+        .loader {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-white text-black font-sans selection:bg-black selection:text-white">
+
+    <!-- Modal de Captura de Leads -->
+    <div id="leadModal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="modal-content bg-white w-full max-w-md relative shadow-2xl">
+            <!-- Close button -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-black transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            
+            <!-- Form Content -->
+            <div id="formStep" class="p-8">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-widest mb-4">
+                        <i data-lucide="lock" class="w-3 h-3"></i> Acesso Exclusivo
+                    </div>
+                    <h3 class="text-2xl font-serif font-black text-black mb-2">Quero ver o investimento</h3>
+                    <p class="text-zinc-500 text-sm">Preencha seus dados para liberar as condições especiais de lançamento.</p>
+                </div>
+                
+                <form id="leadForm" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-600 mb-2">Nome Completo</label>
+                        <input type="text" id="leadName" required 
+                            class="w-full px-4 py-3 border-2 border-zinc-200 focus:border-black outline-none transition-colors text-sm"
+                            placeholder="Seu nome completo">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-600 mb-2">E-mail</label>
+                        <input type="email" id="leadEmail" required 
+                            class="w-full px-4 py-3 border-2 border-zinc-200 focus:border-black outline-none transition-colors text-sm"
+                            placeholder="seu@email.com">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-600 mb-2">WhatsApp</label>
+                        <input type="tel" id="leadPhone" required 
+                            class="w-full px-4 py-3 border-2 border-zinc-200 focus:border-black outline-none transition-colors text-sm"
+                            placeholder="(00) 00000-0000">
+                    </div>
+                    
+                    <button type="submit" id="submitBtn" class="w-full bg-black hover:bg-zinc-800 text-white py-4 text-sm font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2">
+                        <span id="btnText">Liberar Investimento</span>
+                        <div id="btnLoader" class="loader hidden"></div>
+                    </button>
+                </form>
+                
+                <p class="text-center text-[10px] text-zinc-400 mt-4">
+                    Seus dados estão seguros e não serão compartilhados.
+                </p>
+            </div>
+            
+            <!-- Success Step -->
+            <div id="successStep" class="p-8 hidden">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="check" class="w-8 h-8 text-green-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-serif font-black text-black mb-2">Acesso Liberado!</h3>
+                    <p class="text-zinc-500 text-sm mb-6">Confira abaixo as condições especiais de lançamento.</p>
+                    <button onclick="closeModalAndReveal()" class="w-full bg-black hover:bg-zinc-800 text-white py-4 text-sm font-bold uppercase tracking-widest transition-all">
+                        Ver Investimento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-md border-b border-white/10 py-4 transition-all">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer">
+                <div class="w-10 h-10 flex items-center justify-center border-2 border-white text-white">
+                    <i data-lucide="scale" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <span class="font-black text-xl tracking-widest block leading-none text-white font-serif">MAGISTRAR</span>
+                    <span class="text-[10px] uppercase tracking-[0.3em] font-medium block leading-none mt-1 text-zinc-400">Ensino Jurídico</span>
+                </div>
+            </div>
+            
+            <nav class="hidden lg:flex items-center gap-8">
+                <a href="#metodologia" class="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-white hover:underline underline-offset-4 transition-colors">O Curso</a>
+                <a href="#plataforma" class="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-white hover:underline underline-offset-4 transition-colors">Plataforma</a>
+                <a href="#professores" class="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-white hover:underline underline-offset-4 transition-colors">Corpo Docente</a>
+            </nav>
+            
+            <div class="flex gap-4">
+                <button class="bg-white hover:bg-zinc-200 text-black border border-white py-2 px-6 text-xs font-bold uppercase tracking-widest transition-all shadow-xl hidden md:block">
+                    Área do Aluno
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative min-h-screen flex items-center justify-center bg-black pt-32 pb-20 overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-zinc-800 via-black to-black opacity-40"></div>
+        <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+        <div class="relative z-10 max-w-6xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 border border-white/20 bg-white/5 text-white backdrop-blur-md mb-8 uppercase tracking-[0.2em] text-[10px] font-bold">
+                <i data-lucide="gavel" class="w-3 h-3"></i> Extensivo ENAM 2026 (ENAM V)
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-serif text-white leading-[1.1] tracking-tight mb-8">
+                Preparação <span class="italic font-light text-zinc-400">estratégica</span> para o <br />
+                <span class="font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-600">
+                    Exame Nacional da Magistratura.
+                </span>
+            </h1>
+            
+            <p class="text-base md:text-lg text-zinc-400 max-w-3xl mx-auto mb-12 font-light leading-relaxed">
+                Com mais de <strong class="text-white">350 horas de conteúdo</strong>, o curso reúne aulas teóricas, resolução de questões da FGV, simulados semanais e um roteiro de estudos direcionado, além de bônus como flashcards, banco de questões, cadernos de erros e dashboard de desempenho. <span class="text-white">É a escolha ideal para quem quer estudar com foco, método e alto rendimento.</span>
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+                <button onclick="openModal()" class="bg-white hover:bg-zinc-200 text-black py-4 px-8 text-sm font-bold uppercase tracking-widest shadow-xl transition-all">
+                    Conhecer o Curso
+                </button>
+                <button class="bg-transparent border border-white/40 text-white hover:bg-white/10 py-4 px-8 text-sm font-bold uppercase tracking-widest transition-all">
+                    Baixar Cronograma
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-zinc-800 border border-zinc-800 max-w-5xl mx-auto">
+                <div class="text-center p-6 bg-black hover:bg-zinc-950 transition-colors">
+                    <h3 class="text-white font-black text-3xl mb-1">+350h</h3>
+                    <p class="text-zinc-500 text-[10px] uppercase tracking-widest font-bold">Aulas Teóricas</p>
+                </div>
+                <div class="text-center p-6 bg-black hover:bg-zinc-950 transition-colors">
+                    <h3 class="text-white font-black text-3xl mb-1">60.000</h3>
+                    <p class="text-zinc-500 text-[10px] uppercase tracking-widest font-bold">Questões</p>
+                </div>
+                <div class="text-center p-6 bg-black hover:bg-zinc-950 transition-colors">
+                    <h3 class="text-white font-black text-3xl mb-1">100%</h3>
+                    <p class="text-zinc-500 text-[10px] uppercase tracking-widest font-bold">Foco FGV</p>
+                </div>
+                <div class="text-center p-6 bg-black hover:bg-zinc-950 transition-colors">
+                    <h3 class="text-white font-black text-3xl mb-1">10</h3>
+                    <p class="text-zinc-500 text-[10px] uppercase tracking-widest font-bold">Simulados</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="metodologia" class="py-24 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="max-w-2xl mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 border bg-zinc-100 border-zinc-200 text-black mb-6 uppercase tracking-[0.2em] text-[10px] font-bold">
+                    <i data-lucide="book-open" class="w-3 h-3"></i> Metodologia
+                </div>
+                <h2 class="text-4xl font-serif font-black tracking-tighter mb-4">Pilares da Aprovação</h2>
+                <p class="text-zinc-600 text-lg">Uma metodologia desenhada para cobrir as lacunas deixadas pelo estudo tradicional.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="group p-8 border border-zinc-200 hover:bg-zinc-50 hover:border-black transition-all duration-300">
+                    <div class="w-12 h-12 bg-black text-white flex items-center justify-center mb-6">
+                        <i data-lucide="map-pin" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Mapas de Lei Seca</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Indicação em formato de termômetro dos artigos mais cobrados pela FGV, com atualizações constantes.</p>
+                </div>
+
+                <div class="group p-8 border border-zinc-200 hover:bg-zinc-50 hover:border-black transition-all duration-300">
+                    <div class="w-12 h-12 bg-black text-white flex items-center justify-center mb-6">
+                        <i data-lucide="file-text" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">10 Simulados Semanais</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">80 questões com distribuição precisa, simulando exatamente a forma de aplicação da prova.</p>
+                </div>
+
+                <div class="group p-8 border border-zinc-200 hover:bg-zinc-50 hover:border-black transition-all duration-300">
+                    <div class="w-12 h-12 bg-black text-white flex items-center justify-center mb-6">
+                        <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Questões Comentadas</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Mais de 150h de resolução com foco total na FGV e Informativos mais incidentes.</p>
+                </div>
+
+                <div class="group p-8 border border-zinc-200 hover:bg-zinc-50 hover:border-black transition-all duration-300">
+                    <div class="w-12 h-12 bg-black text-white flex items-center justify-center mb-6">
+                        <i data-lucide="video" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">+350h Aulas Teóricas</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Pacote extensivo cobrindo todas as disciplinas do edital com profundidade teórica.</p>
+                </div>
+
+                <div class="group p-8 border border-zinc-200 hover:bg-zinc-50 hover:border-black transition-all duration-300">
+                    <div class="w-12 h-12 bg-black text-white flex items-center justify-center mb-6">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">InforMagistrar</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Mais de 3.000 questões inéditas de informativos (Certo/Errado) com comentários.</p>
+                </div>
+
+                <div class="group p-8 border border-zinc-200 hover:bg-zinc-50 hover:border-black transition-all duration-300">
+                    <div class="w-12 h-12 bg-black text-white flex items-center justify-center mb-6">
+                        <i data-lucide="calendar" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Roteiro de Estudos</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Cronograma guiado de 3 a 4 horas diárias, de segunda a sábado. Organização total.</p>
+                </div>
+            </div>
+            
+            <!-- Bônus Section -->
+            <div class="mt-16 p-8 bg-zinc-50 border border-zinc-200">
+                <h3 class="text-2xl font-serif font-black mb-6 text-center">Bônus Inclusos</h3>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-black text-white flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="layers" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-medium text-sm">Flashcards</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-black text-white flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="database" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-medium text-sm">Banco de Questões</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-black text-white flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="notebook" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-medium text-sm">Cadernos de Erros</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-black text-white flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-medium text-sm">Dashboard de Desempenho</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="professores" class="py-24 bg-black text-white border-t border-zinc-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 border border-white/20 bg-white/5 text-white backdrop-blur-md mb-6 uppercase tracking-[0.2em] text-[10px] font-bold">
+                    <i data-lucide="users" class="w-3 h-3"></i> Corpo Docente
+                </div>
+                <h2 class="text-4xl font-serif text-white mb-4">Aprenda com quem <span class="italic text-zinc-400">vive</span> o Direito</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-zinc-800 border border-zinc-800">
+                <div class="bg-zinc-950 p-8 hover:bg-black transition-colors group">
+                    <p class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4 group-hover:text-white">Formação Humanística</p>
+                    <p class="text-sm font-medium text-zinc-300">Alexandre Piovesan (Juiz do Trabalho/GO)</p>
+                </div>
+                <div class="bg-zinc-950 p-8 hover:bg-black transition-colors group">
+                    <p class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4 group-hover:text-white">Direito Constitucional</p>
+                    <p class="text-sm font-medium text-zinc-300">Gustavo Fernandez (Juiz de Direito TJDFT)</p>
+                    <p class="text-sm font-medium text-zinc-300 mt-1">Eduardo dos Santos (Advogado)</p>
+                </div>
+                <div class="bg-zinc-950 p-8 hover:bg-black transition-colors group">
+                    <p class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4 group-hover:text-white">Direito Penal</p>
+                    <p class="text-sm font-medium text-zinc-300">Alexandre Salim (Promotor)</p>
+                    <p class="text-sm font-medium text-zinc-300 mt-1">Michael Procópio (Juiz Fed.)</p>
+                </div>
+                <div class="bg-zinc-950 p-8 hover:bg-black transition-colors group">
+                    <p class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4 group-hover:text-white">Processo Civil</p>
+                    <p class="text-sm font-medium text-zinc-300">Maurício Cunha (Juiz de Direito)</p>
+                    <p class="text-sm font-medium text-zinc-300 mt-1">Thiago Telles (Juiz de Direito)</p>
+                </div>
+                <div class="bg-zinc-950 p-8 hover:bg-black transition-colors group">
+                    <p class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4 group-hover:text-white">Direito Tributário</p>
+                    <p class="text-sm font-medium text-zinc-300">Rogério Cunha (Juiz de Direito)</p>
+                </div>
+                <div class="bg-zinc-950 p-8 hover:bg-black transition-colors group">
+                    <p class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4 group-hover:text-white">Direito Empresarial</p>
+                    <p class="text-sm font-medium text-zinc-300">Alex Horschutz (Juiz do Trabalho)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+      <section id="enam-nunca-mais" class="py-32 bg-zinc-950 border-t border-white/5 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5"></div>
+        
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                
+                <div class="lg:w-1/2">
+                    <div class="inline-flex items-center gap-2 border border-red-500/30 bg-red-500/10 px-4 py-2 rounded-full mb-8">
+                        <i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-red-200">Projeto Exclusivo</span>
+                    </div>
+                    
+                    <h2 class="text-4xl md:text-5xl font-serif font-black text-white mb-6 leading-tight">
+                        ENAM <span class="text-[#D4AF37] italic">Nunca Mais.</span>
+                    </h2>
+                    
+                    <p class="text-zinc-400 text-lg leading-relaxed mb-8">
+                        Você não precisa fazer a prova do ENAM 2, 3 ou 4 vezes. A repetição é o maior inimigo da sua aprovação final.
+                    </p>
+                    
+                    <p class="text-zinc-300 text-base leading-relaxed mb-8 border-l-2 border-[#D4AF37] pl-6">
+                        Com o método Magistrar, sua próxima prova será a última. Desenvolvemos uma estratégia cirúrgica focada nos padrões da FGV para que você supere essa barreira de uma vez por todas e foque no que importa: a Magistratura.
+                    </p>
+                    <ul class="space-y-4 mb-10">
+                        <li class="flex items-center gap-4">
+                            <div class="w-8 h-8 rounded-full bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20">
+                                <i data-lucide="target" class="w-4 h-4 text-[#D4AF37]"></i>
+                            </div>
+                            <span class="text-zinc-400 text-sm">Foco 100% nos temas de maior incidência</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <div class="w-8 h-8 rounded-full bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20">
+                                <i data-lucide="bar-chart-2" class="w-4 h-4 text-[#D4AF37]"></i>
+                            </div>
+                            <span class="text-zinc-400 text-sm">Análise estatística da banca FGV</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="lg:w-1/2 flex justify-center items-center">
+                    <div class="relative group cursor-default">
+                        <div class="w-64 h-64 md:w-80 md:h-80 rounded-full border border-[#D4AF37]/30 flex flex-col items-center justify-center relative bg-gradient-to-br from-black to-zinc-900 shadow-gold-glow z-10 p-8 text-center group-hover:border-[#D4AF37]/60 transition-colors duration-500">
+                            <i data-lucide="ban" class="w-16 h-16 text-red-500 mb-4 stroke-[1.5]"></i>
+                            <h3 class="text-3xl font-black text-white font-serif uppercase tracking-widest leading-none mb-2">ENAM</h3>
+                            <p class="text-[#D4AF37] font-bold text-lg uppercase tracking-widest">Nunca Mais</p>
+                            <div class="w-12 h-1 bg-[#D4AF37] mt-4"></div>
+                        </div>
+                        
+                        <div class="absolute inset-0 border border-[#D4AF37]/10 rounded-full scale-125 animate-pulse"></div>
+                        <div class="absolute inset-0 border border-dashed border-[#D4AF37]/20 rounded-full scale-150 opacity-50"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="investimento" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 border bg-zinc-100 border-zinc-200 text-black mb-6 uppercase tracking-[0.2em] text-[10px] font-bold">
+                        <i data-lucide="award" class="w-3 h-3"></i> Matrículas Abertas
+                    </div>
+                    <h2 class="text-5xl font-serif font-black text-black mb-6 tracking-tighter leading-tight">Garanta sua vaga no <br>Extensivo ENAM 2026.</h2>
+                    <p class="text-zinc-600 text-lg mb-8 leading-relaxed">
+                        O investimento mais seguro para a sua carreira. Acesso completo a aulas, simulados, plataforma de questões e mentoria coletiva.
+                    </p>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-black"></i>
+                            <span class="font-medium text-zinc-800">Acesso ilimitado até a data da prova</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-black"></i>
+                            <span class="font-medium text-zinc-800">Atualizações constantes de jurisprudência</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-black"></i>
+                            <span class="font-medium text-zinc-800">Garantia incondicional de 7 dias</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="absolute inset-0 bg-black translate-x-4 translate-y-4 hidden md:block"></div>
+                    <div class="bg-white border-2 border-black p-8 md:p-12 relative z-10 shadow-2xl">
+                        
+                        <!-- Price Lock Overlay -->
+                        <div id="priceLockOverlay" class="absolute inset-0 bg-white/95 backdrop-blur-sm z-20 flex flex-col items-center justify-center p-8">
+                            <div class="w-16 h-16 bg-black text-white flex items-center justify-center mb-6">
+                                <i data-lucide="lock" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-center mb-2">Investimento Exclusivo</h3>
+                            <p class="text-zinc-500 text-sm text-center mb-6">Clique abaixo para liberar as condições especiais de lançamento.</p>
+                            <button onclick="openModal()" class="bg-black hover:bg-zinc-800 text-white py-4 px-8 text-sm font-bold uppercase tracking-widest transition-all">
+                                Liberar Preço
+                            </button>
+                        </div>
+                        
+                        <!-- Hidden Price Content -->
+                        <div id="priceContent" class="price-hidden">
+                            <div class="inline-block bg-black text-white px-4 py-1 text-xs font-bold uppercase tracking-widest mb-6">Oferta de Lançamento</div>
+                            
+                            <div class="mb-8">
+                                <p class="text-zinc-500 line-through text-sm">De R$ 1.997,00</p>
+                                <div class="flex items-end gap-2">
+                                    <h3 class="text-5xl font-black text-black">R$ 1.497</h3>
+                                    <span class="text-zinc-600 font-bold mb-1.5">à vista</span>
+                                </div>
+                                <p class="text-zinc-500 text-sm mt-2">ou 12x de R$ 149,70 no cartão</p>
+                            </div>
+
+                            <button class="w-full bg-black hover:bg-zinc-800 text-white py-5 text-lg font-bold uppercase tracking-widest transition-all mb-4">
+                                FAZER MINHA MATRÍCULA
+                            </button>
+                            
+                            <p class="text-center text-xs text-zinc-400 flex items-center justify-center gap-2">
+                                <i data-lucide="lock" class="w-3 h-3"></i> Pagamento Seguro via Hotmart
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <footer class="bg-black text-zinc-500 py-16 border-t border-zinc-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+                <div class="flex items-center gap-3">
+                    <div class="border border-zinc-700 p-2 text-white"><i data-lucide="scale" class="w-6 h-6"></i></div>
+                    <span class="text-white font-serif font-bold text-2xl tracking-wide">MAGISTRAR</span>
+                </div>
+                <div class="flex gap-8 text-xs font-bold uppercase tracking-widest">
+                    <a href="#" class="hover:text-white transition-colors">Termos</a>
+                    <a href="#" class="hover:text-white transition-colors">Privacidade</a>
+                    <a href="#" class="hover:text-white transition-colors">Suporte</a>
+                </div>
+            </div>
+            <div class="text-center md:text-left border-t border-zinc-900 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
+                <p>© 2026 Magistrar Cursos Jurídicos. Todos os direitos reservados.</p>
+                <p>CNPJ: 00.000.000/0001-00</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        
+        // State
+        let priceRevealed = localStorage.getItem('magistrar_price_revealed') === 'true';
+        
+        // Check if price was already revealed
+        if (priceRevealed) {
+            revealPrice();
+        }
+        
+        // Modal Functions
+        function openModal() {
+            if (priceRevealed) {
+                scrollToPrice();
+                return;
+            }
+            document.getElementById('leadModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            document.getElementById('leadModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function closeModalAndReveal() {
+            closeModal();
+            revealPrice();
+            setTimeout(() => {
+                scrollToPrice();
+            }, 300);
+        }
+        
+        function revealPrice() {
+            priceRevealed = true;
+            localStorage.setItem('magistrar_price_revealed', 'true');
+            
+            const overlay = document.getElementById('priceLockOverlay');
+            const priceContent = document.getElementById('priceContent');
+            
+            if (overlay) {
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 300);
+            }
+            
+            if (priceContent) {
+                priceContent.classList.remove('price-hidden');
+                priceContent.classList.add('price-revealed');
+            }
+            
+            // Reinitialize icons for revealed content
+            lucide.createIcons();
+        }
+        
+        function scrollToPrice() {
+            document.getElementById('investimento').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Form Submission
+        document.getElementById('leadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('leadName').value;
+            const email = document.getElementById('leadEmail').value;
+            const phone = document.getElementById('leadPhone').value;
+            
+            // Show loading
+            document.getElementById('btnText').classList.add('hidden');
+            document.getElementById('btnLoader').classList.remove('hidden');
+            document.getElementById('submitBtn').disabled = true;
+            
+            // Simulate API call (replace with actual integration)
+            setTimeout(() => {
+                // Log lead data (replace with actual API call)
+                console.log('Lead captured:', { name, email, phone });
+                
+                // You can add your actual lead capture here:
+                // fetch('/api/leads', { method: 'POST', body: JSON.stringify({ name, email, phone }) })
+                
+                // Show success
+                document.getElementById('formStep').classList.add('hidden');
+                document.getElementById('successStep').classList.remove('hidden');
+                
+                // Reinitialize icons
+                lucide.createIcons();
+            }, 1500);
+        });
+        
+        // Phone mask
+        document.getElementById('leadPhone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            
+            if (value.length > 0) {
+                if (value.length <= 2) {
+                    value = `(${value}`;
+                } else if (value.length <= 7) {
+                    value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+                } else {
+                    value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+                }
+            }
+            
+            e.target.value = value;
+        });
+        
+        // Close modal on escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+        
+        // Close modal on overlay click
+        document.getElementById('leadModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
