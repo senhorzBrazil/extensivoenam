@@ -531,13 +531,199 @@
         </div>
     </section>
 
-    <section id="cursos" class="py-24 bg-zinc-950 border-t border-white/5">
-        <div class="max-w-5xl mx-auto px-6">
+   <section id="cursos" class="py-24 bg-zinc-950 relative overflow-hidden border-t border-white/5">
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-1/4 left-0 w-96 h-96 bg-[#D4AF37]/5 rounded-full filter blur-[150px]"></div>
+            <div class="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-900/10 rounded-full filter blur-[150px]"></div>
+        </div>
+
+        <div class="relative container mx-auto px-6 max-w-7xl">
+            
             <div class="text-center mb-16">
-                <span class="text-[#D4AF37] text-xs font-bold tracking-[0.3em] uppercase">Catálogo Completo</span>
-                <h2 class="text-3xl md:text-5xl font-serif text-white mt-3 mb-6">Estude para <span class="italic text-zinc-500">Todas as Carreiras</span></h2>
+                <div class="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] px-4 py-2 rounded-full mb-6">
+                    <i data-lucide="crown" class="w-4 h-4"></i>
+                    <span class="text-xs font-bold uppercase tracking-wider">Acesso Completo Black</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-black text-white mb-6">
+                    Estude para <span class="text-gold italic">Todas as Carreiras Jurídicas</span>
+                </h2>
+                <p class="text-lg text-zinc-400 max-w-3xl mx-auto mb-8 font-light">
+                    Nossos planos oferecem acesso completo a todos os cursos da plataforma. Estude para múltiplas carreiras jurídicas com um único investimento e método comprovado.
+                </p>
+                
+                <div class="flex flex-wrap justify-center gap-8 lg:gap-16 mb-12 border-y border-white/5 py-8">
+                    <div class="text-center">
+                        <div class="text-3xl lg:text-4xl font-black text-white mb-1">92+</div>
+                        <div class="text-xs uppercase tracking-widest text-[#D4AF37]">Cursos Disponíveis</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl lg:text-4xl font-black text-white mb-1">∞</div>
+                        <div class="text-xs uppercase tracking-widest text-[#D4AF37]">Acesso Ilimitado</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl lg:text-4xl font-black text-white mb-1">100%</div>
+                        <div class="text-xs uppercase tracking-widest text-[#D4AF37]">Atualizado</div>
+                    </div>
+                </div>
             </div>
-            <div id="courses-accordion" class="space-y-3"></div>
+
+            <div class="flex flex-col lg:flex-row gap-12 items-start">
+                
+                <div class="w-full lg:w-1/2">
+                    <h3 class="text-xl font-serif text-white mb-6 flex items-center gap-2">
+                        <i data-lucide="library" class="w-5 h-5 text-[#D4AF37]"></i> Catálogo Incluso
+                    </h3>
+                    <div class="grid gap-3">
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-[#D4AF37]/30 transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="p-2 bg-[#D4AF37]/10 rounded text-[#D4AF37]"><i data-lucide="graduation-cap" class="w-5 h-5"></i></div>
+                                <div>
+                                    <h4 class="text-white font-bold text-sm">ENAM</h4>
+                                    <p class="text-xs text-zinc-500">8 Cursos Completos</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-zinc-600 line-through group-hover:text-zinc-400 transition-colors">R$ 2.999</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-[#D4AF37]/30 transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="p-2 bg-[#D4AF37]/10 rounded text-[#D4AF37]"><i data-lucide="scale" class="w-5 h-5"></i></div>
+                                <div>
+                                    <h4 class="text-white font-bold text-sm">Magistratura Estadual</h4>
+                                    <p class="text-xs text-zinc-500">10 Cursos Completos</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-zinc-600 line-through group-hover:text-zinc-400 transition-colors">R$ 3.599</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-[#D4AF37]/30 transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="p-2 bg-[#D4AF37]/10 rounded text-[#D4AF37]"><i data-lucide="gavel" class="w-5 h-5"></i></div>
+                                <div>
+                                    <h4 class="text-white font-bold text-sm">Magistratura Federal</h4>
+                                    <p class="text-xs text-zinc-500">10 Cursos Completos</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-zinc-600 line-through group-hover:text-zinc-400 transition-colors">R$ 3.599</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-[#D4AF37]/30 transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="p-2 bg-[#D4AF37]/10 rounded text-[#D4AF37]"><i data-lucide="briefcase" class="w-5 h-5"></i></div>
+                                <div>
+                                    <h4 class="text-white font-bold text-sm">Magistratura do Trabalho</h4>
+                                    <p class="text-xs text-zinc-500">14 Cursos Completos</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-zinc-600 line-through group-hover:text-zinc-400 transition-colors">R$ 3.599</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-[#D4AF37]/30 transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="p-2 bg-[#D4AF37]/10 rounded text-[#D4AF37]"><i data-lucide="landmark" class="w-5 h-5"></i></div>
+                                <div>
+                                    <h4 class="text-white font-bold text-sm">Ministério Público</h4>
+                                    <p class="text-xs text-zinc-500">7 Cursos Completos</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-zinc-600 line-through group-hover:text-zinc-400 transition-colors">R$ 2.899</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-[#D4AF37]/30 transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="p-2 bg-[#D4AF37]/10 rounded text-[#D4AF37]"><i data-lucide="shield" class="w-5 h-5"></i></div>
+                                <div>
+                                    <h4 class="text-white font-bold text-sm">Defensoria & Procuradorias</h4>
+                                    <p class="text-xs text-zinc-500">14 Cursos Completos</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-zinc-600 line-through group-hover:text-zinc-400 transition-colors">R$ 4.299</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-[#D4AF37]/30 transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="p-2 bg-[#D4AF37]/10 rounded text-[#D4AF37]"><i data-lucide="rocket" class="w-5 h-5"></i></div>
+                                <div>
+                                    <h4 class="text-white font-bold text-sm">Delegado, Analista & OAB</h4>
+                                    <p class="text-xs text-zinc-500">31 Cursos Completos</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-zinc-600 line-through group-hover:text-zinc-400 transition-colors">R$ 5.199</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full lg:w-1/2">
+                    <div class="bg-gradient-to-br from-[#1a1a1a] to-black border border-[#D4AF37]/30 rounded-2xl p-8 lg:p-10 sticky top-24 shadow-2xl shadow-[#D4AF37]/10">
+                        
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-14 h-14 bg-gradient-to-br from-[#D4AF37] to-[#B38728] rounded-xl flex items-center justify-center shadow-lg">
+                                <i data-lucide="gem" class="w-7 h-7 text-black"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-serif text-white font-bold leading-tight">
+                                    Mais de <span class="text-[#D4AF37]">R$ 110 mil</span> <br>
+                                    em preparação.
+                                </h3>
+                            </div>
+                        </div>
+
+                        <p class="text-zinc-400 text-sm leading-relaxed mb-6">
+                            Comprando curso por curso, você investiria <strong class="text-white">R$ 110.591,80</strong> apenas no material atual. Mas tem algo que dinheiro nenhum compra separadamente: <strong class="text-[#D4AF37]">os cursos que ainda nem existem.</strong>
+                        </p>
+
+                        <div class="space-y-4 mb-8">
+                            <div class="flex gap-3 items-start">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0"></i>
+                                <div>
+                                    <p class="text-white font-bold text-sm">Os 92 cursos atuais</p>
+                                    <p class="text-xs text-zinc-500">Todo catálogo disponível hoje</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-3 items-start">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0"></i>
+                                <div>
+                                    <p class="text-white font-bold text-sm">TODOS os próximos cursos</p>
+                                    <p class="text-xs text-zinc-500">Que lançarmos no futuro, incluídos automaticamente</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-3 items-start">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0"></i>
+                                <div>
+                                    <p class="text-white font-bold text-sm">TODAS as atualizações</p>
+                                    <p class="text-xs text-zinc-500">Lei Seca, Jurisprudência e novos editais</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/5 border border-white/10 rounded-xl p-6 mb-8 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-[#D4AF37] text-black text-[10px] font-bold px-3 py-1 rounded-bl-lg">ECONOMIA REAL</div>
+                            
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-zinc-400 text-sm">Valor Individual Total:</span>
+                                <span class="text-zinc-500 line-through text-sm">R$ 110.591,80</span>
+                            </div>
+                            <div class="w-full h-px bg-white/10 my-3"></div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-white font-bold">Hoje na Black Friday:</span>
+                                <span class="text-[#D4AF37] font-black text-xl">R$ 3.397</span>
+                            </div>
+                            <p class="text-[10px] text-zinc-500 mt-1 text-right">pagamento único e vitalício</p>
+                        </div>
+
+                        <div class="text-center">
+                            <button onclick="document.getElementById('planos').scrollIntoView({behavior: 'smooth'})" class="w-full bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:scale-[1.02] transition-transform text-black font-bold py-4 rounded-lg uppercase tracking-widest text-sm shadow-gold mb-3">
+                                Ver Planos Vitalícios
+                            </button>
+                            <p class="text-[10px] text-zinc-500 flex items-center justify-center gap-1">
+                                <i data-lucide="lock" class="w-3 h-3"></i> Compra Segura • Garantia de 7 dias
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
     </section>
 
