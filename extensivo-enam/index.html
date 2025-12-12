@@ -32,10 +32,10 @@
                     keyframes: {
                         'scroll-left': {
                             '0%': { transform: 'translateX(0)' },
-                            '100%': { transform: 'translateX(-50%)' }, /* Ajustado para -50% pois duplicamos o conteúdo */
+                            '100%': { transform: 'translateX(-50%)' }, 
                         },
                         'scroll-right': {
-                            '0%': { transform: 'translateX(-50%)' }, /* Começa na metade (fim do primeiro set) */
+                            '0%': { transform: 'translateX(-50%)' }, 
                             '100%': { transform: 'translateX(0)' },
                         }
                     }
@@ -411,6 +411,33 @@
         </div>
     </section>
 
+    <section class="py-24 bg-black relative overflow-hidden border-t border-white/10">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#D4AF37]/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+        <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full mb-8">
+                <i data-lucide="crosshair" class="w-4 h-4"></i>
+                <span class="text-xs font-bold uppercase tracking-widest">Assertividade Cirúrgica</span>
+            </div>
+
+            <h2 class="text-5xl md:text-7xl font-serif font-black text-white mb-6 tracking-tight">
+                <span class="block text-[#D4AF37]">28 de 80</span>
+                questões antecipadas.
+            </h2>
+
+            <p class="text-xl md:text-2xl text-zinc-300 font-light leading-relaxed mb-8">
+                Isso foi o que entregamos <span class="text-white font-bold border-b border-[#D4AF37]">apenas na Revisão de Véspera.</span>
+            </p>
+
+            <div class="p-8 bg-zinc-900/50 border border-white/10 rounded-2xl backdrop-blur-sm shadow-xl">
+                <p class="text-lg md:text-xl text-zinc-400">
+                    Se conseguimos prever <strong>35% da prova</strong> em um único dia de aula... <br class="hidden md:block" />
+                    <span class="text-white font-bold block mt-2 text-2xl font-serif">Imagina quem se preparou com a gente?</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
      <section id="depoimentos" class="py-24 bg-zinc-950 relative border-t border-white/5">
     <div class="max-w-7xl mx-auto px-6 relative z-10">
         <div class="text-center mb-16">
@@ -618,6 +645,21 @@
                         </div>
                     </div>
 
+                    <div class="flex-shrink-0 w-36 lg:w-48 relative rounded-xl overflow-hidden border border-white/10 hover:border-[#D4AF37]/50 transition-all">
+                        <div class="aspect-[3/4] relative overflow-hidden grayscale hover:grayscale-0 transition-all duration-500">
+                            <img src="https://magistrarcursos.com.br/mentorias/assets/img/Renato-P.webp" alt="Renato Porto" class="w-full h-full object-cover"/>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 w-36 lg:w-48 relative rounded-xl overflow-hidden border border-white/10 hover:border-[#D4AF37]/50 transition-all">
+                        <div class="aspect-[3/4] relative overflow-hidden grayscale hover:grayscale-0 transition-all duration-500">
+                            <img src="https://magistrarcursos.com.br/mentorias/assets/img/Elisson-M.webp" alt="Elisson Miessa" class="w-full h-full object-cover"/>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 w-36 lg:w-48 relative rounded-xl overflow-hidden border border-white/10 hover:border-[#D4AF37]/50 transition-all">
+                        <div class="aspect-[3/4] relative overflow-hidden grayscale hover:grayscale-0 transition-all duration-500">
+                            <img src="https://magistrarcursos.com.br/mentorias/assets/img/Joao-B.webp" alt="João Berthier" class="w-full h-full object-cover"/>
+                        </div>
+                    </div>
                 </div>
             </div>
 
