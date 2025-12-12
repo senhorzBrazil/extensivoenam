@@ -5,6 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Magistrar | Excelência</title>
     
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '734391549581057');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=734391549581057&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+
+    <!-- Google Ads Tag -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11248427119"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-11248427119');
+    </script>
+    <!-- End Google Ads Tag -->
+    
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
@@ -509,6 +537,32 @@
             return null;
         }
 
+        // ============================================
+        // FUNÇÃO DE DISPARO DE EVENTOS DE CONVERSÃO
+        // ============================================
+        function trackLeadConversion(leadData) {
+            // Meta Pixel - Evento Lead
+            if (typeof fbq !== 'undefined') {
+                fbq('track', 'Lead', {
+                    content_name: 'Palestra Clóvis de Barros Filho',
+                    content_category: 'Lead Capture',
+                    value: 0,
+                    currency: 'BRL'
+                });
+                console.log('Meta Pixel: Lead event disparado');
+            }
+
+            // Google Ads - Evento de Conversão
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'conversion', {
+                    'send_to': 'AW-11248427119/lead_clovis',
+                    'event_category': 'Lead',
+                    'event_label': 'Palestra Clóvis de Barros Filho'
+                });
+                console.log('Google Ads: Conversion event disparado');
+            }
+        }
+
         // Submit do formulário
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -542,7 +596,7 @@
                 careers_interest: careersInterest,
                 description: 'Lead vindo da LP Palestra Clóvis de Barros Filho',
                 temperature: 8,
-                source: 'form',
+                source: 'landing',
                 utm_source: utmParams.utm_source,
                 utm_medium: utmParams.utm_medium,
                 utm_campaign: utmParams.utm_campaign,
@@ -556,6 +610,8 @@
             };
 
             try {
+                console.log('📤 Enviando lead para API Magistrar:', payload);
+                
                 // Envia para ambas as APIs em paralelo
                 const [apiResponse] = await Promise.all([
                     fetch('https://site.magistrarcursos.com.br/api/site/leads', {
@@ -569,9 +625,22 @@
                     sendToActiveCampaign(name, email, phone, careersInterest)
                 ]);
 
+                const responseData = await apiResponse.json().catch(() => null);
+                console.log('📥 Resposta API Magistrar:', {
+                    status: apiResponse.status,
+                    ok: apiResponse.ok,
+                    data: responseData
+                });
+
                 if (!apiResponse.ok) {
+                    console.error('❌ Erro na API:', responseData);
                     throw new Error('Erro ao enviar');
                 }
+
+                console.log('✅ Lead enviado com sucesso!');
+
+                // ✅ DISPARA EVENTOS DE CONVERSÃO
+                trackLeadConversion({ name, email, phone });
 
                 // Sucesso
                 formContent.classList.add('hidden');
@@ -581,6 +650,7 @@
                 lucide.createIcons();
 
             } catch (err) {
+                console.error('❌ Erro ao enviar lead:', err);
                 errorMessage.classList.remove('hidden');
             } finally {
                 submitBtn.disabled = false;
